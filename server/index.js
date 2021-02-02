@@ -82,6 +82,9 @@ io.on('connection', (socket) => {
       switch (command) {
         case "success":
         case "skip":
+          if (!(room in rooms)) {
+            rooms[room] = genRoomInfo();
+          }
           io.to(room).emit('message', { type: "wordUpdate", data: getNextWord(room)});
           break;
         default:
