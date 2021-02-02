@@ -1,6 +1,6 @@
 # random-word-room
 
-[![Heroku](https://heroku-badge.herokuapp.com/?app=random-word-room)]
+![Heroku](https://heroku-badge.herokuapp.com/?app=random-word-room)
 
 Running at : http://random-word-room.herokuapp.com/
 
