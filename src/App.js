@@ -1,37 +1,45 @@
 import React from "react";
-import axios from "axios";
+import { Switch, Route, Link, useLocation } from "react-router-dom";
+import Room from "./Room";
 import "./styles.css";
 
-export default class App extends React.Component {
-  state = {
-    users: [],
-  };
-  componentDidMount() {
-    axios.get("/users.json").then((response) => {
-      this.setState({ users: response.data });
-    });
+/**
+ * @param {Number} length
+ * @returns random lowercase alphabetic string of length 'length'
+ */
+function makemeetid(length) {
+  var result = "";
+  var characters = "abcdefghijklmnopqrstuvwxyz";
+  var charactersLength = characters.length;
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    if (i % 3 === 2 && i !== length - 1) {
+      result += "-";
+    }
+  }
+  return result;
+}
+
+export default function App() {
+  const id = makemeetid(9);
+  let location = useLocation();
+  let idPath = "/" + id;
+  if (location.pathname !== "/" && !location.pathname.includes(".")) {
+    idPath = location.pathname;
   }
 
-  render() {
-    const { users } = this.state;
-    return (
-      <div>
-        <ul className="users">
-          {users.map((user) => (
-            <li className="user">
-              <p>
-                <strong>Name:</strong> {user.name}
-              </p>
-              <p>
-                <strong>Email:</strong> {user.email}
-              </p>
-              <p>
-                <strong>City:</strong> {user.address.city}
-              </p>
-            </li>
-          ))}
-        </ul>
-      </div>
-    );
-  }
+  return (
+    <div className="App">
+      <Switch>
+        <Route exact path={idPath}>
+          <Room />
+        </Route>
+        <Route exact path="/">
+          <button>
+            <Link to={idPath}> Go to Room {idPath} </Link>
+          </button>
+        </Route>
+      </Switch>
+    </div>
+  );
 }
