@@ -5,6 +5,8 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const words = require("./public/words.json");
 
+const PORT = process.env.PORT || 5000;
+
 // add middlewares
 app.use(express.static(path.join(__dirname, "..", "build")));
 app.use(express.static("public"));
@@ -49,7 +51,7 @@ io.on('connection', (socket) => {
   });
 });
 
-// start express server on port 5000
-http.listen(5000, () => {
+// start express server on port 5000 or env PORT variable
+http.listen(PORT, () => {
   console.log("server started on port 5000");
 });
