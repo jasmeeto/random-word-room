@@ -1,3 +1,13 @@
+# random-word-room
+
+[![Heroku](https://heroku-badge.herokuapp.com/?app=random-word-room)]
+
+Running at : http://random-word-room.herokuapp.com/
+
+React.js, Express.js, and socket.io based application that creates rooms using websockets and generates random words for playing games similar to catchphrase or charades.
+
+## Bootstrap and create-react-app info
+
 ## To run this project execute following commands in order
 
 ```javascript
