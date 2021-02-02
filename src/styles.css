@@ -2,3 +2,11 @@
   font-family: sans-serif;
   text-align: center;
 }
+
+button {
+  margin: 10px;
+}
+
+ul {
+  list-style-type:none;
+}
