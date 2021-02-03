@@ -4,9 +4,13 @@
 }
 
 button {
-  margin: 10px;
+  margin: 5px;
 }
 
 ul {
   list-style-type:none;
+}
+
+.link-input {
+  width: 200px;
 }
