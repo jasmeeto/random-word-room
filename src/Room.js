@@ -31,7 +31,7 @@ const Room = (props) => {
       <h3> Copy room link : &nbsp; 
           <input class="link-input" type="text" value={window.location.href} />
       </h3>
-      <h1> {word} </h1>
+      <h1 id="word-main"> {word} </h1>
       <h3> Success Counter: {counter} </h3>
       <button onClick={() => {setCounter(0)}}>Reset Counter</button>
       <button onClick={() => {setCounter(counter + 1); sendCommand(room, "success")}}>Success</button>
