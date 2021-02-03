@@ -41,7 +41,11 @@ function getNextRandomIndex(indexArr) {
 }
 
 function genRoomInfo() {
-  return {indexArr: generateIndexArr(words), currIndex: -1};
+  return {
+    indexArr: generateIndexArr(words),
+    currIndex: -1,
+    sucessCount: 0
+  };
 }
 
 function getNextWord(room) {
@@ -54,6 +58,40 @@ function getNextWord(room) {
   }
   roomInfo.currIndex = wordIndex;
   return words[wordIndex];
+}
+
+function getCount(room) {
+  let roomInfo = rooms[room];
+  return roomInfo.sucessCount;
+}
+
+function getCurrWord(room) {
+  let roomInfo = rooms[room];
+  return words[roomInfo.currIndex];
+}
+
+function updateCount(room, count) {
+  let roomInfo = rooms[room];
+  return roomInfo.sucessCount = count;
+}
+
+function updateAndEmitCount(room, count=-1) {
+  if (!(room in rooms)) {
+    rooms[room] = genRoomInfo();
+  }
+  if (count > -1) {
+    updateCount(room, count);
+  } else {
+    updateCount(room, rooms[room].sucessCount + 1);
+  }
+  io.to(room).emit('message', { type: "counterUpdate", data: getCount(room) });
+}
+
+function updateAndEmitWord(room) {
+  if (!(room in rooms)) {
+    rooms[room] = genRoomInfo();
+  }
+  io.to(room).emit('message', { type: "wordUpdate", data: getNextWord(room) });
 }
 
 // room model
@@ -74,18 +112,22 @@ io.on('connection', (socket) => {
        rooms[room] = genRoomInfo();
        getNextWord(room);
      }
-     io.to(room).emit('message', { type: "initWord", data: words[rooms[room].currIndex]});
+     io.to(room).emit('message', { type: "wordInit", data: getCurrWord(room)});
+     io.to(room).emit('message', { type: "counterUpdate", data: getCount(room)});
   });
 
   socket.on('command', (data) => {
       const { command, room } = data;
       switch (command) {
         case "success":
+          updateAndEmitCount(room);
+          updateAndEmitWord(room);
+          break;
         case "skip":
-          if (!(room in rooms)) {
-            rooms[room] = genRoomInfo();
-          }
-          io.to(room).emit('message', { type: "wordUpdate", data: getNextWord(room)});
+          updateAndEmitWord(room);
+          break;
+        case "resetCounter":
+          updateAndEmitCount(room, 0);
           break;
         default:
           console.error("invalid command " + command);
@@ -97,3 +139,5 @@ io.on('connection', (socket) => {
 http.listen(PORT, () => {
   console.log("server started on port 5000");
 });
+
+

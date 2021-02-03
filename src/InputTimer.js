@@ -1,11 +1,23 @@
 import React, { useState } from "react";
 import Timer from 'react-compound-timer';
 
-export default function NameForm(props) {
+const timerNumberStyle = {
+  fontWeight: "bold",
+};
+
+const timerSectionStyle = {
+  margin: "2px",
+};
+
+const timerDisplayStyle = {
+  margin: "0.5em",
+}
+
+export default function InputTimer(props) {
   const [timerSeconds, setTimerSeconds] = useState(0);
 
   return (
-    <div>
+    <div className={props.className}>
     <Timer 
         startImmediately={false}
         timeToUpdate={50}
@@ -31,14 +43,18 @@ export default function NameForm(props) {
                   &nbsp;
                   <input type="submit" value="Set Timer" />
                 </form>
-                <div>
-                    <Timer.Minutes /> minutes 
-                    <div />
-                    <Timer.Seconds /> seconds
-                    <div />
-                    <Timer.Milliseconds /> milliseconds
+                <div style={timerDisplayStyle}>
+                    <span style={timerSectionStyle}>
+                      <span style={timerNumberStyle}><Timer.Minutes /></span> min
+                    </span>
+                    <span style={timerSectionStyle}>
+                      <span style={timerNumberStyle}><Timer.Seconds /></span> s
+                    </span>
+                    <span style={timerSectionStyle}>
+                      <span style={timerNumberStyle}><Timer.Milliseconds /></span> ms
+                    </span>
+                   
                 </div>
-                <br />
                 <div>
                     <button onClick={start}>Start</button>
                     <button onClick={stop}>Stop</button>

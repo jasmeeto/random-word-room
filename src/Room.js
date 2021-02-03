@@ -16,9 +16,12 @@ const Room = (props) => {
     if (room) initiateSocket(room);
     subscribeToMessage((err, data) => {
       if(err) return;
-      if (data.type === "initWord" || data.type === "wordUpdate") { 
+      if (data.type === "wordInit" || data.type === "wordUpdate") { 
         wordHistory.push(data.data);
         setWord(data.data);
+      }
+      else if (data.type === "counterUpdate") {
+        setCounter(data.data);
       }
     });
     return () => {
@@ -33,8 +36,8 @@ const Room = (props) => {
       </h3>
       <h1 id="word-main"> {word} </h1>
       <h3> Success Counter: {counter} </h3>
-      <button onClick={() => {setCounter(0)}}>Reset Counter</button>
-      <button onClick={() => {setCounter(counter + 1); sendCommand(room, "success")}}>Success</button>
+      <button onClick={() => {sendCommand(room, "resetCounter");}}>Reset Counter</button>
+      <button onClick={() => {sendCommand(room, "success")}}>Success</button>
       <button onClick={() => {sendCommand(room, "skip")}}>Skip</button>
       <p />
       <InputTimer />
