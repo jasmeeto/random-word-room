@@ -16,14 +16,23 @@ InputTime.propTypes = {
   initialValue: PropTypes.number,
 }
 
+const MAX_TIME = 600; // seconds, 600s = 10 min
+
 export default function InputTime(props) {
   const initialValue = props.initialValue || 0;
   const classes = useStyles();
   const [timerSeconds, setTimerSeconds] = useState(initialValue);
+  const [helperText, setHelperText] = useState("");
   const handleSubmit = props.handleSubmit;
 
   const onSubmit = (e) => {
     e.preventDefault();
+    if (timerSeconds > MAX_TIME) {
+      setHelperText("Time too high");
+      return;
+    }
+    console.log(helperText);
+    setHelperText("");
     handleSubmit(timerSeconds);
   }
   
@@ -31,6 +40,8 @@ export default function InputTime(props) {
     <div className={props.className || ""}>
       <form onSubmit={onSubmit}>
         <TextField
+          error={helperText ? true : false}
+          helperText={helperText}
           type="Number"
           label="Time (s)"
           value={timerSeconds}
