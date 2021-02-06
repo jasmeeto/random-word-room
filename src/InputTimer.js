@@ -1,6 +1,17 @@
 import React, { useState } from "react";
 import Timer from 'react-compound-timer';
 
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles({
+  root: {
+    margin: '5px',
+  },
+});
+
 const timerNumberStyle = {
   fontWeight: "bold",
 };
@@ -14,6 +25,7 @@ const timerDisplayStyle = {
 }
 
 export default function InputTimer(props) {
+  const classes = useStyles();
   const [timerSeconds, setTimerSeconds] = useState(0);
 
   return (
@@ -32,16 +44,18 @@ export default function InputTimer(props) {
             return (
             <React.Fragment>
                 <form onSubmit={handleSubmit}>
-                  <label>
-                      Timer Time (s) : &nbsp;
-                      <input
-                      type="number"
-                      value={timerSeconds}
-                      onChange={e => setTimerSeconds(e.target.value)}
-                      />
-                  </label>
-                  &nbsp;
-                  <input type="submit" value="Set Timer" />
+                  <TextField
+                    type="Number"
+                    label="Time"
+                    value={timerSeconds}
+                    onChange={e => setTimerSeconds(e.target.value)}
+                  />
+                  <Button
+                    className={classes.root}
+                    type="submit"
+                    variant="contained">
+                      Set Timer
+                  </Button>
                 </form>
                 <div style={timerDisplayStyle}>
                     <span style={timerSectionStyle}>
@@ -56,11 +70,25 @@ export default function InputTimer(props) {
                    
                 </div>
                 <div>
-                    <button onClick={start}>Start</button>
-                    <button onClick={stop}>Stop</button>
-                    <button onClick={reset}>Reset</button>
+                  <Button
+                    className={classes.root}
+                    variant="contained"
+                    onClick={start}>
+                    Start
+                  </Button>
+                  <Button
+                    className={classes.root}
+                    variant="contained"
+                    onClick={stop}>
+                    Stop
+                  </Button>
+                  <Button
+                    className={classes.root}
+                    variant="contained"
+                    onClick={reset}>
+                    Reset
+                  </Button>
                 </div>
-
             </React.Fragment>
         )}
         
