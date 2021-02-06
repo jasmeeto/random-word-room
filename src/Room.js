@@ -64,7 +64,7 @@ const Room = (props) => {
   let location = useLocation();
   let room = location.pathname;
   const [word, setWord] = useState("");
-  const [wordHistory] = useState([]);
+  const [wordHistory, setWordHistory] = useState([]);
   const [counter, setCounter] = useState(0);
   const [timerSeconds, setTimerSeconds] = useState(0);
   const [initialTime, setInitialTime] = useState(0);
@@ -101,7 +101,7 @@ const Room = (props) => {
     return () => {
       disconnectSocket();
     }
-  }, [room, wordHistory]);
+  }, [room]);
 
   useEffect(() => {
     if (timerSeconds <=0 && updatedTimer) {
@@ -110,8 +110,10 @@ const Room = (props) => {
   }, [timerSeconds, updatedTimer])
 
   useEffect(() => {
-    wordHistory.push(word);
-  }, [word, wordHistory]);
+    setWordHistory((prevState) => {
+      return [...prevState, word];
+    });
+  }, [word]);
 
   const handleClose = () => {
     setOpenDialog(false);
