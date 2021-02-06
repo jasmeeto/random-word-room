@@ -13,6 +13,7 @@ const useStyles = makeStyles({
 
 InputTime.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
+  handleStart: PropTypes.func.isRequired,
   initialValue: PropTypes.number,
 }
 
@@ -24,6 +25,7 @@ export default function InputTime(props) {
   const [timerSeconds, setTimerSeconds] = useState(initialValue);
   const [helperText, setHelperText] = useState("");
   const handleSubmit = props.handleSubmit;
+  const handleStart = props.handleStart;
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -51,7 +53,13 @@ export default function InputTime(props) {
           className={classes.root}
           type="submit"
           variant="outlined">
-            Set Timer
+            Reset Timer
+        </Button>
+        <Button
+          className={classes.root}
+          onClick={() => {handleStart();}}
+          variant="outlined">
+            Start Time
         </Button>
       </form>
     </div>

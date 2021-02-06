@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { initiateSocket, disconnectSocket,
   subscribeToMessage, sendCommand } from './Socket';
+import { useStickyState } from './HookHelpers';
 
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
@@ -10,13 +11,18 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
-import { makeStyles } from '@material-ui/core/styles';
+
+import Snackbar from '@material-ui/core/Snackbar';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
+
 import Typography from '@material-ui/core/Typography';
 import Card from '@material-ui/core/Card';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
+import { makeStyles } from '@material-ui/core/styles';
 
 import grey from "@material-ui/core/colors/grey";
 
@@ -44,22 +50,6 @@ const useStyles = makeStyles({
   },
 });
 
-function useRadioButtons(name, initialValue=null) {
-  const [value, setState] = useState(initialValue);
-
-  const handleChange = e => {
-    setState(e.target.value);
-  };
-
-  const inputProps = {
-    name,
-    type: "radio",
-    onChange: handleChange
-  };
-
-  return [value, inputProps];
-}
-
 function secondsToMs(d) {
   d = Number(d);
   var m = Math.floor(d / 60);
@@ -69,7 +59,6 @@ function secondsToMs(d) {
   var sDisplay = s > 0 ? String(s) : "";
   return mDisplay.padStart(2, '0') + ":" + sDisplay.padStart(2, '0'); 
 }
-
 const Room = (props) => {
   const classes = useStyles();
   let location = useLocation();
@@ -77,11 +66,16 @@ const Room = (props) => {
   const [word, setWord] = useState("");
   const [wordHistory] = useState([]);
   const [counter, setCounter] = useState(0);
-  const [guesserValue, guesserProps] = useRadioButtons("playertype", "cluegiver");
   const [timerSeconds, setTimerSeconds] = useState(0);
   const [initialTime, setInitialTime] = useState(0);
   const [openDialog, setOpenDialog] = useState(false);
+  const [startSnackbarOpen, setStartSnackbarOpen] = useState(false);
   const [updatedTimer, setUpdatedTimer] = useState(false);
+  const [guesserValue, setGuesserValue] = useStickyState("cluegiver", "guesserValue");
+
+  const handleGuesserChange = e => {
+    setGuesserValue(e.target.value);
+  };
 
   useEffect(() => {
     if (room) initiateSocket(room);
@@ -118,26 +112,31 @@ const Room = (props) => {
     setOpenDialog(false);
   };
 
+  const handleSnackbarClose = () => {
+    setStartSnackbarOpen(false);
+    sendCommand(room, "resetGame");
+  };
+
+  const handleTimerStart = () => {
+    setStartSnackbarOpen(true);
+  }
+
   return (
     <div>
       <Typography variant="body1" className={classes.link}> Link :
           <Link href={window.location.href}> {window.location.href} </Link>
       </Typography>
       <FormControl component="fieldset">
-        <RadioGroup aria-label="Role" name="role" value={guesserValue} onChange={guesserProps.onChange}>
+        <RadioGroup
+          aria-label="Role"
+          name="role"
+          value={guesserValue}
+          onChange={handleGuesserChange}
+          row>
           <FormControlLabel value="cluegiver" control={<Radio />} label="Clue Giver" />
           <FormControlLabel value="guesser" control={<Radio />} label="Guesser" />
         </RadioGroup>
       </FormControl>
-      <div>
-        <Button
-          size="small"
-          className={classes.restartButton}
-          variant="contained"
-          onClick={() => {sendCommand(room, "resetGame");}}>
-            Restart Game
-        </Button>
-      </div>
       { guesserValue === "cluegiver" &&
         <Box display="flex" justifyContent="center">
           <Card className={classes.wordCard}>
@@ -175,7 +174,8 @@ const Room = (props) => {
       <InputTime
         key={initialTime}
         initialValue={initialTime}
-        handleSubmit={(time) => sendCommand(room, "setTimer", time)} />
+        handleSubmit={(time) => sendCommand(room, "setTimer", time)}
+        handleStart={handleTimerStart} />
       <p />
       <Typography variant="h5">
         Your Word History
@@ -203,7 +203,8 @@ const Room = (props) => {
       >
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Game Over! Success count was {counter}.
+            <p>Times Up!</p>
+            <p>You guessed {counter} correctly</p>
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -212,6 +213,18 @@ const Room = (props) => {
           </Button>
         </DialogActions>
       </Dialog>
+      <Snackbar
+        open={startSnackbarOpen}
+        autoHideDuration={2000}
+        onClose={handleSnackbarClose}
+        message="Starting game timer!"
+        action={
+          <React.Fragment>
+            <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </React.Fragment>
+        }/>
     </div>
   );
 };
