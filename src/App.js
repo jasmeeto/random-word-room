@@ -1,6 +1,7 @@
 import React from "react";
 import { Switch, Route, Link, useLocation } from "react-router-dom";
 import Room from "./Room";
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import "./styles.css";
 
 /**
@@ -20,6 +21,19 @@ function makemeetid(length) {
   return result;
 }
 
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      //main: '#8a33e2',
+      main: '#9d5edb',
+    },
+    secondary: {
+      //main: '#d3b9ed',
+      main: '#d95dca',
+    },
+  }
+});
+
 export default function App() {
   const id = makemeetid(9);
   let location = useLocation();
@@ -32,7 +46,9 @@ export default function App() {
     <div className="App">
       <Switch>
         <Route exact path={idPath}>
-          <Room />
+          <ThemeProvider theme={theme}>
+            <Room />
+          </ThemeProvider>
         </Route>
         <Route exact path="/">
           <button>

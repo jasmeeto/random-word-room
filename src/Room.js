@@ -10,6 +10,7 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import { makeStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
 
 import InputTimer from './InputTimer';
 
@@ -17,6 +18,9 @@ const useStyles = makeStyles({
   root: {
     margin: '5px',
   },
+  word: {
+    margin: '10px',
+  }
 });
 
 function useRadioButtons(name, initialValue=null) {
@@ -63,9 +67,9 @@ const Room = (props) => {
 
   return (
     <div>
-      <h3> Copy room link :
+      <Typography variant="h4"> Link :
           <Link href={window.location.href}> {window.location.href} </Link>
-      </h3>
+      </Typography>
       <FormControl component="fieldset">
         <RadioGroup aria-label="Role" name="role" value={guesserValue} onChange={guesserProps.onChange}>
           <FormControlLabel value="cluegiver" control={<Radio />} label="Clue Giver" />
@@ -73,14 +77,19 @@ const Room = (props) => {
         </RadioGroup>
       </FormControl>
       { guesserValue === "cluegiver" &&
-        <h1 id="word-main"> {word} </h1>
+        <Typography variant="h3" color="primary" className={classes.word}> 
+          {word}
+        </Typography>
       }
-      <h3> Success Counter: {counter} </h3>
+      <Typography variant="h5" className={classes.root}>
+        Success Count <Typography variant="h4">{counter}</Typography>
+      </Typography>
       <div>
         <Button
           size="large"
           className={classes.root}
           variant="contained"
+          color="primary"
           onClick={() => {sendCommand(room, "success");}}>
             Success
         </Button>
@@ -90,6 +99,7 @@ const Room = (props) => {
           size="large"
           className={classes.root}
           variant="contained"
+          color="secondary"
           onClick={() => {sendCommand(room, "skip");}}>
           Skip
         </Button>
@@ -104,15 +114,22 @@ const Room = (props) => {
         </Button>
       </div>
       <p />
-      <InputTimer />
+      <InputTimer startTime={30} />
       <p />
-      <h3>Your Word History</h3>
+      <Typography variant="h5">
+        Your Word History
+      </Typography>
+
       <ul>
         {wordHistory.map((val, i, array) => {
           if (i===0) return null;
           let revIndex = array.length - 1 - i;
           let revWord = array[revIndex];
-          return <li key={revIndex}>{revWord}</li>
+          return (
+            <Typography variant="body1">
+              <li key={revIndex}>{revWord}</li>
+            </Typography>
+          );
         })}
       </ul>
     </div>
