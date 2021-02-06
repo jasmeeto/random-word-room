@@ -67,7 +67,7 @@ const Room = (props) => {
 
   return (
     <div>
-      <Typography variant="h4"> Link :
+      <Typography variant="body1"> Link :
           <Link href={window.location.href}> {window.location.href} </Link>
       </Typography>
       <FormControl component="fieldset">
