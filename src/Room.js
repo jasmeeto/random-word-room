@@ -170,9 +170,8 @@ const Room = (props) => {
           Skip
         </Button>
       </div>
-      
       <p />
-      <Typography variant="h6">{secondsToMs(timerSeconds)}</Typography>
+      <Typography variant="h5">{secondsToMs(timerSeconds)}</Typography>
       <InputTime
         key={initialTime}
         initialValue={initialTime}
