@@ -11,6 +11,7 @@
     "react": "^16.13.1",
     "react-compound-timer": "1.2.0",
     "react-dom": "^16.13.1",
+    "react-github-corner": "^2.5.0",
     "react-router-dom": "5.2.0",
     "react-scripts": "^3.4.1",
     "socket.io-client": "3.1.0"

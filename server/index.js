@@ -44,7 +44,9 @@ function genRoomInfo() {
   return {
     indexArr: generateIndexArr(words),
     currIndex: -1,
-    sucessCount: 0
+    sucessCount: 0,
+    initialTime: 30,
+    timerSeconds: 30
   };
 }
 
@@ -68,6 +70,16 @@ function getCount(room) {
 function getCurrWord(room) {
   let roomInfo = rooms[room];
   return words[roomInfo.currIndex];
+}
+
+function getCurrTime(room) {
+  let roomInfo = rooms[room];
+  return roomInfo.timerSeconds;
+}
+
+function getInitialTime(room) {
+  let roomInfo = rooms[room];
+  return roomInfo.initialTime;
 }
 
 function updateCount(room, count) {
@@ -94,6 +106,36 @@ function updateAndEmitWord(room) {
   io.to(room).emit('message', { type: "wordUpdate", data: getNextWord(room) });
 }
 
+function setTimer(room, value) {
+  if (!(room in rooms)) {
+    rooms[room] = genRoomInfo();
+  }
+  let roomInfo = rooms[room];
+  roomInfo.initialTime = value;
+  roomInfo.timerSeconds = roomInfo.initialTime;
+  io.to(room).emit("message", {type:'timerSet', data:roomInfo.timerSeconds});
+  if (roomInfo.currTimer) clearInterval(roomInfo.currTimer);
+}
+
+function updateAndStartTimer(room) {
+  if (!(room in rooms)) {
+    rooms[room] = genRoomInfo();
+  }
+  let roomInfo = rooms[room];
+  roomInfo.timerSeconds = roomInfo.initialTime;
+  io.to(room).emit("message", {type:'timerUpdate', data:roomInfo.timerSeconds});
+  if (roomInfo.currTimer) clearInterval(roomInfo.currTimer);
+  var gameCountDown = setInterval(function() {
+    roomInfo.timerSeconds = roomInfo.timerSeconds - 1;
+    io.to(room).emit("message", {type:'timerUpdate', data:roomInfo.timerSeconds});
+    if (roomInfo.timerSeconds <= 0) {
+      io.to(room).emit("message", {type:'gameOver', data: roomInfo.sucessCount});
+      clearInterval(gameCountDown);
+      if (roomInfo.currTimer) delete roomInfo.currTimer;
+    }
+  }, 1000); // countdown in seconds
+  roomInfo.currTimer = gameCountDown;
+}
 // room model
 let rooms = {}
 
@@ -113,11 +155,12 @@ io.on('connection', (socket) => {
        getNextWord(room);
      }
      io.to(room).emit('message', { type: "wordInit", data: getCurrWord(room)});
+     io.to(room).emit('message', { type: "timerInit", data: getInitialTime(room)});
      io.to(room).emit('message', { type: "counterUpdate", data: getCount(room)});
   });
 
   socket.on('command', (data) => {
-      const { command, room } = data;
+      const { command, room, value } = data;
       switch (command) {
         case "success":
           updateAndEmitCount(room);
@@ -126,8 +169,12 @@ io.on('connection', (socket) => {
         case "skip":
           updateAndEmitWord(room);
           break;
-        case "resetCounter":
+        case "resetGame":
           updateAndEmitCount(room, 0);
+          updateAndStartTimer(room);
+          break;
+        case "setTimer":
+          setTimer(room, value);
           break;
         default:
           console.error("invalid command " + command);

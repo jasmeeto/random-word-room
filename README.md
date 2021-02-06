@@ -4,7 +4,13 @@
 
 Running at : http://random-word-room.herokuapp.com/
 
-React.js, Express.js, and socket.io based application that creates rooms using websockets and generates random words for playing games similar to catchphrase or charades.
+Application that creates rooms using websockets and generates random words for playing games similar to catchphrase or charades
+
+### Based On:
+- React.js
+- Express.js
+- socket.io
+- Material-UI 
 
 ## Bootstrap and create-react-app info
 

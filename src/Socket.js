@@ -19,6 +19,7 @@ export const subscribeToMessage = (cb) => {
     return cb(null, msg);
   });
 }
-export const sendCommand = (room, command) => {
-  if (socket) socket.emit('command', { command, room });
+
+export const sendCommand = (room, command, data) => {
+  if (socket) socket.emit('command', { command:command, room:room, value:data });
 }

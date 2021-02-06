@@ -1,7 +1,9 @@
 import React from "react";
-import { Switch, Route, Link, useLocation } from "react-router-dom";
+import { Switch, Route, useLocation } from "react-router-dom";
 import Room from "./Room";
+import GithubCorner from "react-github-corner";
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
 import "./styles.css";
 
 /**
@@ -44,18 +46,19 @@ export default function App() {
 
   return (
     <div className="App">
+      <ThemeProvider theme={theme}>
       <Switch>
         <Route exact path={idPath}>
-          <ThemeProvider theme={theme}>
             <Room />
-          </ThemeProvider>
         </Route>
         <Route exact path="/">
-          <button>
-            <Link to={idPath}> Go to Room {idPath} </Link>
-          </button>
+          <Button color="secondary" variant="contained" href={idPath}>
+            Go to Room {idPath}
+          </Button>
         </Route>
       </Switch>
+      <GithubCorner size={60} href="https://github.com/jasmeeto/random-word-room" />
+      </ThemeProvider>
     </div>
   );
 }
