@@ -2,7 +2,7 @@ import React from "react";
 import { Switch, Route, useLocation } from "react-router-dom";
 import Room from "./Room";
 import GithubCorner from "react-github-corner";
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import { createMuiTheme, ThemeProvider, responsiveFontSizes} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import "./styles.css";
 
@@ -23,7 +23,7 @@ function makemeetid(length) {
   return result;
 }
 
-const theme = createMuiTheme({
+let theme = createMuiTheme({
   palette: {
     primary: {
       //main: '#8a33e2',
@@ -33,8 +33,13 @@ const theme = createMuiTheme({
       //main: '#d3b9ed',
       main: '#d95dca',
     },
-  }
+  },
+  typography: {
+    fontSize: 20,
+  },
 });
+
+theme = responsiveFontSizes(theme);
 
 export default function App() {
   const id = makemeetid(9);
