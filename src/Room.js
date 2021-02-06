@@ -82,14 +82,15 @@ const Room = (props) => {
     subscribeToMessage((err, data) => {
       if(err) return;
       if (data.type === "wordInit" || data.type === "wordUpdate") { 
-        wordHistory.push(data.data);
         setWord(data.data);
       }
       else if (data.type === "counterUpdate") {
         setCounter(data.data);
       }
-      else if (data.type === "timerInit" || data.type==="timerSet") {
+      else if (data.type === "timerSet") {
         setTimerSeconds(data.data);
+      }
+      else if (data.type === "timerInit") {
         setInitialTime(data.data);
       }
       else if (data.type === "timerUpdate") {
@@ -107,6 +108,10 @@ const Room = (props) => {
       setOpenDialog(true);
     }
   }, [timerSeconds, updatedTimer])
+
+  useEffect(() => {
+    wordHistory.push(word);
+  }, [word, wordHistory]);
 
   const handleClose = () => {
     setOpenDialog(false);

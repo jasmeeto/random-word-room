@@ -156,6 +156,7 @@ io.on('connection', (socket) => {
      }
      io.to(room).emit('message', { type: "wordInit", data: getCurrWord(room)});
      io.to(room).emit('message', { type: "timerInit", data: getInitialTime(room)});
+     io.to(room).emit('message', { type: "timerSet", data: getCurrTime(room)});
      io.to(room).emit('message', { type: "counterUpdate", data: getCount(room)});
   });
 
