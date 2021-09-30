@@ -2,7 +2,7 @@
 
 ![Heroku](https://heroku-badge.herokuapp.com/?app=random-word-room)
 
-Running at : http://random-word-room.herokuapp.com/
+Running at : http://random-word-room.herokuapp.com/ - Takes a minute initially
 
 Application that creates rooms using websockets and generates random words for playing games similar to catchphrase or charades
 
